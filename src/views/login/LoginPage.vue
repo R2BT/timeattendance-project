@@ -21,17 +21,17 @@
           </div>
           <div class="col-margin">
           <q-input v-model="Password"  color="purple"
-              bg-color="white" filled type="password" label="Password"     :rules="[(value) => !!value || 'กรุณากรอก Password']"/>
+              bg-color="white" filled type="password" label="Password" :rules="[(value) => !!value || 'กรุณากรอก Password']"/>
     </div>
           <div class="col-margin">
             <q-btn
               unelevated
               rounded
               color="positive"
-              label="เข้าสู่ระบบ"
+              label="Login"
               class="text-center"
               type="submit"
-              style="padding-left: 230px; padding-right: 250px"
+              style="padding-left: 200px; padding-right: 200px"
             />
           </div>
         </q-form>
@@ -101,6 +101,8 @@ body {
 
 .col-margin {
   margin-top: 30px;
+  margin-left: 90px;
+  margin-right: 90px;
 }
 .textDone {
 	color: #FFFFFF;
