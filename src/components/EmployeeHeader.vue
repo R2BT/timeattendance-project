@@ -47,6 +47,14 @@
             <q-item-section> สำหรับฝ่ายบุคคล </q-item-section>
           </q-item>
         </router-link>
+        <router-link :to="{ name: 'addemployee'}"  class="custom-link">
+          <q-item clickable v-ripple>
+            <q-item-section avatar>
+              <q-icon name="add" />
+            </q-item-section>
+            <q-item-section> เพิ่มพนักงานในระบบ </q-item-section>
+          </q-item>
+        </router-link>
         <div class="custom-link" @click="showLogoutDialog">
           <q-item clickable v-ripple>
             <q-item-section avatar>
