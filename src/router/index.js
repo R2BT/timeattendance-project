@@ -8,6 +8,9 @@ import Login from '../views/login/LoginPage.vue'
 import HistoryLeaves from '../views/history/HistoryLeave.vue'
 import HistoryTimeRecords from '../views/history/HistoryTimeRecord.vue'
 import HRMenu from '../views/hr/HRmenu.vue'
+import HRInfo from '../views/hr/HRinfo.vue'
+import HRCheckin from '../views/hr/HRcheckin.vue'
+import HRLeave from '../views/hr/HRleave.vue'
 import RegisterEmployee from '../views/hr/RegisterEmployee.vue'
 import EmployeeHeader from '../components/EmployeeHeader.vue'
 const router = createRouter({
@@ -61,6 +64,21 @@ const router = createRouter({
       path: '/hrmenus',
       name: 'hrmenus',
       component: HRMenu
+    },
+    {
+      path: '/hrinfo',
+      name: 'hrinfo',
+      component: HRInfo
+    },
+    {
+      path: '/hrcheckin',
+      name: 'hrcheckin',
+      component: HRCheckin
+    },
+    {
+      path: '/hrleave',
+      name: 'hrleave',
+      component: HRLeave
     },
     {
       path: '/addemployee',
