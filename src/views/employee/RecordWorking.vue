@@ -2,61 +2,61 @@
   <q-layout view="hHh lpR fFf">
     <Navbar></Navbar>
     <body>
-    <q-page-container>
-      <div class="clock-container">
-        <div class="clock">
-          <div class="historyButton">
-            <div class="col">
-              <router-link :to="{ name: 'historytimerecords' }">
-                <q-btn
-                  dense
-                  flat
-                  round
-                  icon="history"
-                  color="grey"
-                  @click="toggleRightDrawer"
-                  label="ประวัติ"
-                />
-              </router-link>
+      <q-page-container>
+        <div class="clock-container">
+          <div class="clock">
+            <div class="historyButton">
+              <div class="col">
+                <router-link :to="{ name: 'historytimerecords' }">
+                  <q-btn
+                    dense
+                    flat
+                    round
+                    icon="history"
+                    color="grey"
+                    @click="toggleRightDrawer"
+                    label="ประวัติ"
+                  />
+                </router-link>
+              </div>
             </div>
-          </div>
-          <div class="date">{{ currentDate }}</div>
-          <div class="time">{{ currentTime }}</div>
-          <q-form @submit="onSubmit" ref="form">
-            <q-select
-              color="purple"
-              bg-color="white"
-              filled
-              v-model="typeRecord"
-              :options="options"
-              label="ประเภท"
-              :rules="[(value) => !!value || 'กรุณาเลือกประเภท']"
-            ></q-select>
-            <div class="col-margin">
-              <q-input
+            <div class="date">{{ currentDate }}</div>
+            <div class="time">{{ currentTime }}</div>
+            <q-form @submit="onSubmit" ref="form">
+              <q-select
                 color="purple"
                 bg-color="white"
                 filled
-                v-model="infoRecord"
-                label="หมายเหตุ"
-              ></q-input>
-            </div>
-            <div class="col-margin">
-              <q-btn
-                unelevated
-                rounded
-                color="positive"
-                label="บันทึก"
-                class="text-center"
-                type="submit"
-                style="padding-left: 220px; padding-right: 220px"
-              />
-            </div>
-          </q-form>
+                v-model="typeRecord"
+                :options="options"
+                label="ประเภท"
+                :rules="[(value) => !!value || 'กรุณาเลือกประเภท']"
+              ></q-select>
+              <div class="col-margin">
+                <q-input
+                  color="purple"
+                  bg-color="white"
+                  filled
+                  v-model="infoRecord"
+                  label="หมายเหตุ"
+                ></q-input>
+              </div>
+              <div class="col-margin">
+                <q-btn
+                  unelevated
+                  rounded
+                  color="positive"
+                  label="บันทึก"
+                  class="text-center"
+                  type="submit"
+                  style="padding-left: 220px; padding-right: 220px"
+                />
+              </div>
+            </q-form>
+          </div>
         </div>
-      </div>
-    </q-page-container>
-  </body>
+      </q-page-container>
+    </body>
   </q-layout>
 </template>
 
@@ -64,12 +64,16 @@
 import { ref, onMounted } from "vue";
 import Navbar from "../../components/EmployeeHeader.vue";
 import router from "../../router";
-
+import axios from "axios";
 export default {
   components: {
     Navbar,
   },
   setup() {
+    const myItem = localStorage.getItem("user-info");
+    console.log(myItem);
+    const userInfo = JSON.parse(myItem);
+
     const currentTime = ref("");
     const currentDate = ref("");
 
@@ -109,10 +113,45 @@ export default {
       options,
       infoRecord,
 
-      onSubmit() {
+      async onSubmit() {
         if (typeRecord.value != null) {
-          console.log("go");
-          router.push({ name: "recordworkingtimesuccess" });
+          try {
+            const now = new Date(); // Get the current date and time
+
+            // Convert currentTime to a timestamp
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+            const timestamp = `${hours}:${minutes}:${seconds}`;
+
+            // Format currentDate as "YYYY-MM-DD" (date type)
+            const formattedDate = `${now.getFullYear()}-${(now.getMonth() + 1)
+              .toString()
+              .padStart(2, "0")}-${now.getDate().toString().padStart(2, "0")}`;
+
+            let response = await axios.post(
+              "http://localhost:3000/attendance",
+              {
+                employee_id: userInfo.employee_id,
+                attendance_date: formattedDate,
+                attendance_time: timestamp,
+                attendance_type: typeRecord.value,
+                attendance_note:   infoRecord.value,
+              }
+            );
+            if (response.status === 200) {
+              if (
+                response.data.message ===
+                "Attendance record created successfully"
+              ) {
+                console.log("go");
+                router.push({ name: "recordworkingtimesuccess" });
+              }
+            }
+          } catch (error) {
+            console.error("Record Working Time failed:", error);
+            // Handle the error here
+          }
         }
       },
     };
