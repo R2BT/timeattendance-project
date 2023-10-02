@@ -23,7 +23,7 @@
         active-class="active-link"
       >
         <q-list padding>
-          <router-link :to="{ name: 'recordworkingtime'}"  class="custom-link">
+       <router-link :to="{ name: 'recordworkingtime'}" class="custom-link" v-if="userInfo.employee_roles !== 'Admin'">
             <q-item clickable v-ripple>
               <q-item-section avatar>
                 <q-icon name="alarm" />
@@ -31,7 +31,7 @@
               <q-item-section> บันทึกเวลาทํางาน </q-item-section>
             </q-item>
           </router-link>
-          <router-link :to="{ name: 'sendleave'}"  class="custom-link">
+          <router-link :to="{ name: 'sendleave'}" class="custom-link" v-if="userInfo.employee_roles !== 'Admin'">
           <q-item clickable v-ripple>
             <q-item-section avatar>
               <q-icon name="edit" />
@@ -39,23 +39,15 @@
             <q-item-section> ใบลา </q-item-section>
           </q-item>
         </router-link>
-        <router-link :to="{ name: 'hrmenus'}"  class="custom-link">
+        <router-link :to="{ name: 'hrmenus'}" class="custom-link" v-if="userInfo.employee_roles !== 'Employee'">
           <q-item clickable v-ripple>
             <q-item-section avatar>
               <q-icon name="person" />
             </q-item-section>
-            <q-item-section> สำหรับฝ่ายบุคคล </q-item-section>
+            <q-item-section> จัดการข้อมูลพนักงาน </q-item-section>
           </q-item>
         </router-link>
-        <router-link :to="{ name: 'addemployee'}"  class="custom-link">
-          <q-item clickable v-ripple>
-            <q-item-section avatar>
-              <q-icon name="add" />
-            </q-item-section>
-            <q-item-section> เพิ่มพนักงานในระบบ </q-item-section>
-          </q-item>
-        </router-link>
-        <div class="custom-link" @click="showLogoutDialog">
+        <div class="custom-link" @click="showLogoutDialog" >
           <q-item clickable v-ripple>
             <q-item-section avatar>
               <q-icon name="power_settings_new" />
@@ -69,16 +61,19 @@
 
       <q-img
         class="absolute-top"
-        src="../assets/image/backgroundP.png"
+        src="../assets/image/backgrounProfile.svg"
         style="height: 150px"
       >
         <div class="absolute-bottom bg-transparent">
-          <q-avatar size="56px" class="q-mb-sm">
+          <q-avatar size="56px" class="q-mb-sm" v-if="userInfo.employee_gender === 'หญิง'">
             <img src="../assets/image/person.png" />
           </q-avatar>
-          <div>ฝ่ายบุลคล</div>
-          <div class="text-weight-bold">Theeraphat Aksaranan</div>
-          <div>theeraphat.a@ku.th</div>
+          <q-avatar size="56px" class="q-mb-sm" v-if="userInfo.employee_gender === 'ชาย'">
+            <img src="../assets/image/man.png" />
+          </q-avatar>
+          <div>{{ userInfo.employee_roles }}</div>
+          <div class="text-weight-bold">{{ userInfo.employee_title }}  {{ userInfo.employee_name }}  {{ userInfo.employee_surname }}</div>
+          <div>{{ userInfo.employee_email }}</div>
         </div>
       </q-img>
     </q-drawer>
@@ -87,9 +82,10 @@
 
 <script>
 import { ref } from "vue";
-
 import LogoutDialog from "../components/LogoutDialog.vue";
+
 export default {
+
   components: {
     LogoutDialog,
   },
@@ -100,8 +96,15 @@ export default {
   },
   setup() {
     const rightDrawerOpen = ref(false);
+    // Check if the item exists in localStorage
+    const myItem = localStorage.getItem('user-info');
+       console.log(myItem);
+        const userInfo = JSON.parse(myItem);
+       console.log(userInfo.employee_id);
+       console.log(userInfo.employee_roles);
 
     return {
+      userInfo,
       rightDrawerOpen,
       toggleRightDrawer() {
         rightDrawerOpen.value = !rightDrawerOpen.value;
@@ -110,6 +113,7 @@ export default {
   },
 };
 </script>
+
 
 <style >
 /* Define a custom CSS class for your navbar */

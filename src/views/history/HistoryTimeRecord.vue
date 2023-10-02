@@ -46,18 +46,17 @@
   </body>
   </q-layout>
 </template>
-
-<script >
+<script setup >
 import Navbar from "../../components/EmployeeHeader.vue";
 import { ref } from 'vue'
-const columns = [
+const columns = ref([
   {
     name: "date",
     required: true,
     label: "วัน/เดือน/ปี",
     align: "left",
     field: "date",
-    format: (val) => `${val}`,
+    // field: row => row.user.user_firstname,
     sortable: true,
     
   },
@@ -84,93 +83,9 @@ const columns = [
   },
 
 
-];
+]);
 
-const rows = [
-  {
-    date: "15/05/2023",
-    worktimestart: "08.30",
-    worktimeend: "18.00",
-    inforecord: "-",
-   
-  },
-  {
-    date: "16/05/2023",
-    worktimestart: "08.10",
-    worktimeend: "18.00",
-    inforecord: "-",
-   
-  },
-  {
-    date: "17/05/2023",
-    worktimestart: "08.20",
-    worktimeend: "18.00",
-    inforecord: "-",
-   
-  },
-  {
-    date: "18/05/2023",
-    worktimestart: "08.40",
-    worktimeend: "18.00",
-    inforecord: "-",
-   
-  },
-  {
-    date: "19/05/2023",
-    worktimestart: "08.35",
-    worktimeend: "18.00",
-    inforecord: "-",
-   
-  },
-  {
-    date: "20/05/2023",
-    worktimestart: "08.00",
-    worktimeend: "18.00",
-    inforecord: "-",
-   
-  },
-  {
-    date: "21/05/2023",
-    worktimestart: "08.00",
-    worktimeend: "18.00",
-    inforecord: "-",
-   
-  },
-  {
-    date: "22/05/2023",
-    worktimestart: "08.00",
-    worktimeend: "18.00",
-    inforecord: "-",
-   
-  },
-  {
-    date: "23/05/2023",
-    worktimestart: "08.00",
-    worktimeend: "18.00",
-    inforecord: "-",
-   
-  },
-  {
-    date: "24/05/2023",
-    worktimestart: "08.00",
-    worktimeend: "18.00",
-    inforecord: "-",
-   
-  },
-
-];
-export default {
-  setup() {
-    return {
-      filter: ref(''),
-      columns,
-      rows,
-    };
-  },
-  components: {
-    Navbar,
-  },
-};
+const rows = ref([]);
 </script>
 
 <style scoped >
