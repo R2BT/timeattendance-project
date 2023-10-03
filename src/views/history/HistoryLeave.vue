@@ -28,7 +28,7 @@
               title="ประวัติการลา"
               :rows="rows"
               :columns="columns"
-              row-key="date"
+              row-key="leave_request_id"
               :filter="filter"
               :rows-per-page-options="[7]"
             >
@@ -51,14 +51,17 @@
 <script  >
 import Navbar from "../../components/EmployeeHeader.vue";
 import { ref } from 'vue'
+import axios from "axios";
+
+const rows = ref([]);
+
 const columns = [
   {
     name: "dateLeaveStart",
     required: true,
     label: "วันที่เริ่มลา",
     align: "left",
-    field: "dateleavestart",
-    format: (val) => `${val}`,
+    field: (row) => formatDate(row.leave_request_start_date), 
     sortable: true,
     
   },
@@ -66,72 +69,70 @@ const columns = [
     name: "dateLeaveEnd",
     align: "left",
     label: "วันสิ้นสุดการลา",
-    field: "dateleaveend",
+    field: (row) => formatDate(row.leave_request_end_date), 
     sortable: true,
   },
   {
     name: "leaveType",
     align: "left",
     label: "ประเภทการลา",
-    field: "leavetype",
+    field: (row) => row.leave_request_type, 
     sortable: true,
   },
   {
     name: "timeLeaveType",
     align: "left",
-    label: "ประเภทการลา",
-    field: "timeleavetype",
+    label: "ช่วงเวลา",
+    field: (row) => row.leave_request_duration, 
     sortable: true,
   },
   {
     name: "infoLeave",
     align: "left",
     label: "หมายเหตุ",
-    field: "infoleave",
+    field: (row) => {
+      if (!row.leave_request_note) {
+        return "-";
+      }
+      return row.leave_request_note;
+    },
     sortable: true,
   },
   {
     name: "statusLeave",
     align: "left",
     label: "สถานะ",
-    field: "statusleave",
+    field: (row) => row.leave_request_status, 
     sortable: true,
   },
 
 ];
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${day}/${month}/${year}`;
+};
 
-const rows = [
-  {
-    dateleavestart: "15/05/2023",
-    dateleaveend: "16/05/2023",
-    leavetype: "ลาพักร้อน",
-    timeleavetype: "ลาเต็มวัน",
-    infoleave: "-",
-    statusleave: "อนุมัติ",
-   
-  },
-  {
-    dateleavestart: "25/05/2023",
-    dateleaveend: "25/05/2023",
-    leavetype: "ลากิจ",
-    timeleavetype: "ลาครึ่งวัน",
-    infoleave: "-",
-    statusleave: "รอดำเนินการ",
-   
-  },
-  {
-    dateleavestart: "30/05/2023",
-    dateleaveend: "30/05/2023",
-    leavetype: "ลาบวช",
-    timeleavetype: "ลาครึ่งวัน",
-    infoleave: "-",
-    statusleave: "ไม่อนุมัติ",
-   
-  },
+const fetchData = () => {
+  const myItem = localStorage.getItem("user-info");
+  const userInfo = JSON.parse(myItem);
+  console.log(userInfo.employee_id);
+  axios
+    .get("http://localhost:3000/leaveRequest/employee/" + userInfo.employee_id)
+    .then((response) => {
+      const slicedData = response.data.data.slice(0, 100);
 
-];
+      rows.value = slicedData;
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+};
 export default {
   setup() {
+    fetchData();
     return {
       filter: ref(''),
       columns,
