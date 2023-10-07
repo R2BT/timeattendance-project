@@ -4,6 +4,12 @@
     <body>
       <q-page-container>
         <div class="background">
+          <div>
+            <router-link :to="{ name: 'hrmenus' }">
+              <q-btn class="backtomenu" icon="arrow_back" />
+            </router-link>
+          </div>
+
           <div class="background-container">
             <div class="block-background">
               <h6>สำหรับ HR</h6>
@@ -20,7 +26,7 @@
               dense
               @input="filterData"
               class="search-input"
-              style="background-color: white;"
+              style="background-color: white"
             />
             <router-link :to="{ name: 'addemployee' }">
               <q-btn
@@ -41,7 +47,17 @@
           >
             <template v-slot:body-cell-action="props">
               <q-td :props="props">
-                <q-btn icon="mode_edit" @click="onEdit(props.row.eid)"></q-btn>
+                <q-btn
+                  icon="groups"
+                  color="info"
+                  @click="onChange(props.row.eid)"
+                ></q-btn>
+                <router-link :to="{ name: 'editemployee' }"
+                  ><q-btn
+                    icon="mode_edit"
+                    color="warning"
+                  ></q-btn
+                ></router-link>
                 <q-btn
                   icon="delete"
                   color="negative"
@@ -63,12 +79,12 @@
       </q-card-title>
       <q-card-section>
         <div class="text-h6">
-          คุณแน่ใจหรือไม่ว่าต้องการลบข้อมูลพนักงานรายการนี้?
+          {{ dialogMessage }}
         </div>
       </q-card-section>
       <q-card-actions align="right">
-        <q-btn label="ยกเลิก" @click="dialog = false" />
-        <q-btn label="ลบ" color="negative" @click="confirmDelete" />
+        <q-btn label="ยกเลิก" color: @click="dialog = false" />
+        <q-btn label="ยืนยัน" :color="actionColor" @click="confirmDelete" />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -234,6 +250,8 @@ export default {
       },
       dialog: false,
       searchText: "",
+      dialogMessage: "",
+      eidChangeStatus: "",
     };
   },
   components: {
@@ -255,8 +273,17 @@ export default {
     },
   },
   methods: {
-    onDelete(eid) {
+    onChange(eid) {
+      this.dialogMessage =
+        "พนักงานคนนี้จะถูกเปลี่ยนสถานะเป็น Hr ต้องการเปลี่ยนหรือไม่?";
       this.dialog = true;
+      this.actionColor = "primary";
+      this.eidChangeStatus = eid;
+    },
+    onDelete(eid) {
+      this.dialogMessage = "ข้อมูลพนักงานจะถูกลบท่านต้องการดำเนินการต่อหรือไม่";
+      this.dialog = true;
+      this.actionColor = "negative";
       this.eidToDelete = eid;
     },
     confirmDelete() {
@@ -268,8 +295,7 @@ export default {
       }
       this.dialog = false;
     },
-    filterData() {
-    },
+    filterData() {},
   },
 };
 </script>
@@ -291,7 +317,7 @@ body {
 .background-container {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: start;
   height: 35vh;
 }
 
@@ -339,5 +365,11 @@ h6 {
 .close-container {
   display: flex;
   justify-content: flex-end;
+}
+.backtomenu {
+  color: rgb(0, 0, 0);
+  background-color: rgb(255, 255, 255);
+  margin-top: 0.5rem;
+  margin-left: 0.5rem;
 }
 </style>

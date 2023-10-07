@@ -12,6 +12,7 @@ import HRInfo from '../views/hr/HRinfo.vue'
 import HRCheckin from '../views/hr/HRcheckin.vue'
 import HRLeave from '../views/hr/HRleave.vue'
 import RegisterEmployee from '../views/hr/RegisterEmployee.vue'
+import EditEmployee from '../views/hr/EditEmployee.vue'
 import EmployeeHeader from '../components/EmployeeHeader.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -84,6 +85,11 @@ const router = createRouter({
       path: '/addemployee',
       name: 'addemployee',
       component: RegisterEmployee
+    },
+    {
+      path: '/editemployee',
+      name: 'editemployee',
+      component: EditEmployee
     }
   ]
 })

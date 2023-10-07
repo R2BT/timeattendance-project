@@ -4,6 +4,14 @@
     <body>
       <q-page-container>
         <div class="background">
+          <div>
+            <router-link :to="{ name: 'hrmenus' }">
+              <q-btn
+                class="backtomenu"
+                icon="arrow_back"
+              />
+            </router-link>
+          </div>
           <div class="background-container">
             <div class="block-background">
               <h6>สำหรับ HR</h6>
@@ -246,7 +254,7 @@ body {
 .background-container {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: start;
   height: 35vh;
 }
 
@@ -294,5 +302,11 @@ h6 {
 .close-container {
   display: flex;
   justify-content: flex-end;
+}
+.backtomenu{
+  color: rgb(0, 0, 0);
+  background-color: rgb(255, 255, 255);
+  margin-top: 0.5rem;
+  margin-left: 0.5rem;
 }
 </style>
