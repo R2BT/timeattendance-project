@@ -90,7 +90,7 @@
                 <div class="mb-3">
                   <div class="mb-2">
                     <q-file color="purple-8" outlined label-color="grey" v-model="employee_profile_img"
-                      label="Upload รูปภาพพนักงาน">
+                      @change="handleProfileImageUpload" label="Upload รูปภาพพนักงาน">
                       <template v-slot:append>
                         <q-icon name="attachment" color="grey" />
                       </template>
@@ -101,7 +101,7 @@
                 <div class="mb-3">
                   <div class="mb-2">
                     <q-file color="purple-8" outlined label-color="grey" v-model="employee_personnel_id_img"
-                      label="Upload รูปสำเนาบัตรประชาชน">
+                      @change="handlePersonnelIdImageUpload" label="Upload รูปสำเนาบัตรประชาชน">
                       <template v-slot:append>
                         <q-icon name="attachment" color="grey" />
                       </template>
@@ -112,7 +112,7 @@
                 <div class="mb-3">
                   <div class="mb-2">
                     <q-file color="purple-8" outlined label-color="grey" v-model="employee_transcript_img"
-                      label="Upload รูปสำเนาTranscript">
+                      @change="handleTranscriptImageUpload" label="Upload รูปสำเนาTranscript">
                       <template v-slot:append>
                         <q-icon name="attachment" color="grey" />
                       </template>
@@ -123,7 +123,7 @@
                 <div class="mb-3">
                   <div class="mb-2">
                     <q-file color="purple-8" outlined label-color="grey" v-model="employee_contract"
-                      label="Upload รูปเอกสารสัญญาพนักงาน">
+                      @change="handleContractUpload" label="Upload รูปเอกสารสัญญาพนักงาน">
                       <template v-slot:append>
                         <q-icon name="attachment" color="grey" />
                       </template>
@@ -220,35 +220,36 @@ export default {
         this.id &&
         this.password
       ) {
-        const employeeData = {
-          employee_gender: this.selectedGender,
-          employee_title: this.preName,
-          employee_name: this.name,
-          employee_surname: this.lastName,
-          employee_personal_id: this.idCard,
-          employee_tel: this.phoneNumber,
-          employee_email: this.email,
-          employee_birthday: this.birthdate,
-          employee_address: this.address,
-          employee_position: this.position,
-          employee_department: this.department,
-          employee_start_date: this.startDate,
-          employee_salary: this.salary,
-          employee_bank_account: this.idCardBank,
-          employee_tax_id: this.taxId,
-          employee_bank_type: "SCB",
-          employee_id: this.employeeId,
-          employee_login_id: this.id,
-          employee_login_password: this.password,
-          employee_profile_img: this.employee_profile_img,
-          employee_personnel_id_img: this.employee_personnel_id_img,
-          employee_transcript_img: this.employee_transcript_img,
-          employee_contract: this.employee_contract,
-          employee_roles: "Employee",
-        };
+        const formData = new FormData();
+
+        formData.append('employee_gender', this.selectedGender);
+        formData.append('employee_title', this.preName);
+        formData.append('employee_name', this.name);
+        formData.append('employee_surname', this.lastName);
+        formData.append('employee_personal_id', this.idCard);
+        formData.append('employee_tel', this.phoneNumber);
+        formData.append('employee_email', this.email);
+        formData.append('employee_birthday', this.birthdate);
+        formData.append('employee_address', this.address);
+        formData.append('employee_position', this.position);
+        formData.append('employee_department', this.department);
+        formData.append('employee_start_date', this.startDate);
+        formData.append('employee_salary', this.salary);
+        formData.append('employee_bank_account', this.idCardBank);
+        formData.append('employee_tax_id', this.taxId);
+        formData.append('employee_bank_type', 'SCB');
+        formData.append('employee_id', this.employeeId);
+        formData.append('employee_login_id', this.id);
+        formData.append('employee_login_password', this.password);
+
+        // เพิ่มการส่งไฟล์
+        formData.append('employee_profile_img', this.employee_profile_img);
+        formData.append('employee_personnel_id_img', this.employee_personnel_id_img);
+        formData.append('employee_transcript_img', this.employee_transcript_img);
+        formData.append('employee_contract', this.employee_contract);
 
         try {
-          const response = await axios.post('http://localhost:3000/employee', employeeData);
+          const response = await axios.post('http://localhost:3000/employee', formData);
 
           if (response.status == 200) {
             this.dialogMessage = 'บันทึกข้อมูลเรียบร้อย';
@@ -261,12 +262,32 @@ export default {
             this.showDialog = true;
           }
         } catch (error) {
-          console.error('เกิดข้อผิดพลาดในการส่งข้อมูล', error)
+          console.error('เกิดข้อผิดพลาดในการส่งข้อมูล', error);
         }
       } else {
-        alert('กรุณากรอกข้อมูลให้ถูกต้องและครบทุกช่อง')
-        console.log('กรุณากรอกข้อมูลให้ครบทุกช่อง')
+        alert('กรุณากรอกข้อมูลให้ถูกต้องและครบทุกช่อง');
+        console.log('กรุณากรอกข้อมูลให้ครบทุกช่อง');
       }
+    },
+
+    handleProfileImageUpload(event) {
+      // Handle the file selection for the profile image
+      this.employee_profile_img = event.target.files[0];
+    },
+
+    handlePersonnelIdImageUpload(event) {
+      // Handle the file selection for the personnel ID image
+      this.employee_personnel_id_img = event.target.files[0];
+    },
+
+    handleTranscriptImageUpload(event) {
+      // Handle the file selection for the transcript image
+      this.employee_transcript_img = event.target.files[0];
+    },
+
+    handleContractUpload(event) {
+      // Handle the file selection for the contract
+      this.employee_contract = event.target.files[0];
     },
     onReset() {
 
