@@ -32,15 +32,15 @@
                   <q-input color="purple-8" v-model="phoneNumber" label="เบอร์โทรศัพท์" lazy-rules :rules="[
                     val => /^0[689]\d{8}$/.test(val) || 'รูปแบบเบอร์โทรศัพท์ไม่ถูกต้อง'
                   ]" />
-                  <q-input color="purple-8" v-model="birthdate" label="วันเกิด" type="date" lazy-rules :rules="[
-                    val => /^(19|20)\d{2}-\d{2}-\d{2}$/.test(val) || 'รูปแบบวันเกิดไม่ถูกต้อง (ตัวอย่าง: 1990-01-01)'
-                  ]" />
+
+                  <q-input color="purple-8" v-model="birthdate" label="วันเกิด" type="date" lazy-rules="..."
+                    mask="####-##-##" />
                   <q-input color="purple-8" v-model="salary" label="เงินเดือน" lazy-rules :rules="[
                     val => /^\d+(\.\d{1,2})?$/.test(val) || 'รูปแบบเงินเดือนไม่ถูกต้อง (ตัวอย่าง: 5000 หรือ 5000.50)'
                   ]" />
                   <q-input color="purple-8" v-model="address" label="ที่อยู่" lazy-rules
                     :rules="[val => val && val.length > 0 || 'กรุณากรอกข้อมูล']" />
-                  <q-input color="purple-8" v-model="idCardBank" label="บัญชีธนาคาร" lazy-rules :rules="[
+                  <q-input color="purple-8" v-model="idCardBank" label="บัญชีธนาคาร *(SCB)" lazy-rules :rules="[
                     val => /^\d+$/.test(val) || 'รูปแบบบัญชีธนาคารไม่ถูกต้อง'
                   ]" />
                 </div>
@@ -49,12 +49,12 @@
                   <div class="mb-3">
                     <label class="form-label">คำนำหน้า</label>
                     <div class="mb-2">
-                      <q-radio v-model="preName" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
-                        val="นาย" label="นาย" />
-                      <q-radio v-model="preName" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
-                        val="นาง" label="นาง" />
-                        <q-radio v-model="preName" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
-                        val="นางสาว" label="นางสาว" />
+                      <q-radio v-model="preName" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="นาย"
+                        label="นาย" />
+                      <q-radio v-model="preName" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="นาง"
+                        label="นาง" />
+                      <q-radio v-model="preName" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="นางสาว"
+                        label="นางสาว" />
                     </div>
                   </div>
                   <q-input color="purple-8" v-model="lastName" label="นามสกุล" lazy-rules
@@ -64,9 +64,8 @@
                   <q-input color="purple-8" v-model="email" label="อีเมล" lazy-rules :rules="[
                     val => /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(val) || 'รูปแบบอีเมลไม่ถูกต้อง'
                   ]" />
-                  <q-input color="purple-8" v-model="startDate" label="วันเริ่มงาน" type="date" lazy-rules :rules="[
-                    val => /^(19|20)\d{2}-\d{2}-\d{2}$/.test(val) || 'รูปแบบวันเริ่มงานไม่ถูกต้อง (ตัวอย่าง: 2023-01-01)'
-                  ]" />
+                  <q-input color="purple-8" v-model="startDate" label="วันเริ่มงาน" type="date" lazy-rules="..."
+                    mask="####-##-##" />
                   <q-input color="purple-8" v-model="idCard" label="รหัสบัตรประชาชน" lazy-rules :rules="[
                     val => val && val.length === 13 && /^[0-9]+$/.test(val) || 'รหัสบัตรประชาชนไม่ถูกต้อง'
                   ]" />
@@ -90,7 +89,8 @@
                 <div style="margin: 10px;"></div>
                 <div class="mb-3">
                   <div class="mb-2">
-                    <q-file color="purple-8" outlined label-color="grey" v-model="model" label="Upload รูปภาพพนักงาน">
+                    <q-file color="purple-8" outlined label-color="grey" v-model="employee_profile_img"
+                      label="Upload รูปภาพพนักงาน">
                       <template v-slot:append>
                         <q-icon name="attachment" color="grey" />
                       </template>
@@ -100,7 +100,7 @@
                 <div style="margin: 10px;"></div>
                 <div class="mb-3">
                   <div class="mb-2">
-                    <q-file color="purple-8" outlined label-color="grey" v-model="model"
+                    <q-file color="purple-8" outlined label-color="grey" v-model="employee_personnel_id_img"
                       label="Upload รูปสำเนาบัตรประชาชน">
                       <template v-slot:append>
                         <q-icon name="attachment" color="grey" />
@@ -111,7 +111,7 @@
                 <div style="margin: 10px;"></div>
                 <div class="mb-3">
                   <div class="mb-2">
-                    <q-file color="purple-8" outlined label-color="grey" v-model="model"
+                    <q-file color="purple-8" outlined label-color="grey" v-model="employee_transcript_img"
                       label="Upload รูปสำเนาTranscript">
                       <template v-slot:append>
                         <q-icon name="attachment" color="grey" />
@@ -122,7 +122,7 @@
                 <div style="margin: 10px;"></div>
                 <div class="mb-3">
                   <div class="mb-2">
-                    <q-file color="purple-8" outlined label-color="grey" v-model="model"
+                    <q-file color="purple-8" outlined label-color="grey" v-model="employee_contract"
                       label="Upload รูปเอกสารสัญญาพนักงาน">
                       <template v-slot:append>
                         <q-icon name="attachment" color="grey" />
@@ -134,7 +134,7 @@
                 <div class="q-gutter-md" style="display: flex; justify-content: end;">
                   <q-btn color="white" text-color="black" label="กลับ" @click="goBack" />
                   <div style="margin: 0px;"></div>
-                  <q-btn color="green" text-color="white" label="ยืนยัน" type="submit" />
+                  <q-btn color="green" text-color="white" label="ยืนยัน" type="button" @click="onSubmit" />
                 </div>
               </q-card-section>
             </q-card>
@@ -144,15 +144,12 @@
     </q-page-container>
   </q-layout>
 
-  <q-dialog v-model="dialog" persistent>
-    <q-card>
+  <q-dialog v-model="showDialog" no-esc-dismiss>
+    <q-card :class="dialogClass">
       <q-card-section>
-        {{ dialogMessage }}
+        <p class="q-mb-md">{{ dialogMessage }}</p>
+        <q-btn color="primary" label="ตกลง" @click="closeDialog" />
       </q-card-section>
-      <q-card-actions align="right">
-        <q-btn label="ยกเลิก" color="negative" @click="dialog = false" />
-        <q-btn label="ยืนยัน" color="positive" @click="handleConfirm" />
-      </q-card-actions>
     </q-card>
   </q-dialog>
 </template>
@@ -160,6 +157,7 @@
 <script>
 import Navbar from "../../components/EmployeeHeader.vue";
 import { ref } from 'vue';
+import axios from 'axios';
 
 export default {
   components: {
@@ -191,12 +189,17 @@ export default {
       id: '',
       password: '',
       model: null,
-      dialog: false,
+      employee_profile_img: null,
+      employee_personnel_id_img: null,
+      employee_transcript_img: null,
+      employee_contract: null,
       dialogMessage: '',
+      showDialog: false,
+      dialogClass: '',
     };
   },
   methods: {
-    onSubmit() {
+    async onSubmit() {
       if (
         this.selectedGender &&
         this.preName &&
@@ -217,21 +220,59 @@ export default {
         this.id &&
         this.password
       ) {
-        this.dialogMessage = 'คุณต้องการยืนยันข้อมูลใช่หรือไม่?';
-        this.dialog = true;
+        const employeeData = {
+          employee_gender: this.selectedGender,
+          employee_title: this.preName,
+          employee_name: this.name,
+          employee_surname: this.lastName,
+          employee_personal_id: this.idCard,
+          employee_tel: this.phoneNumber,
+          employee_email: this.email,
+          employee_birthday: this.birthdate,
+          employee_address: this.address,
+          employee_position: this.position,
+          employee_department: this.department,
+          employee_start_date: this.startDate,
+          employee_salary: this.salary,
+          employee_bank_account: this.idCardBank,
+          employee_tax_id: this.taxId,
+          employee_bank_type: "SCB",
+          employee_id: this.employeeId,
+          employee_login_id: this.id,
+          employee_login_password: this.password,
+          employee_profile_img: this.employee_profile_img,
+          employee_personnel_id_img: this.employee_personnel_id_img,
+          employee_transcript_img: this.employee_transcript_img,
+          employee_contract: this.employee_contract,
+          employee_roles: "Employee",
+        };
+
+        try {
+          const response = await axios.post('http://localhost:3000/employee', employeeData);
+
+          if (response.status == 200) {
+            this.dialogMessage = 'บันทึกข้อมูลเรียบร้อย';
+            this.dialogClass = 'q-bg-primary text-white';
+            this.showDialog = true;
+            this.goBack();
+          } else {
+            this.dialogMessage = 'บันทึกข้อมูลไม่สำเร็จ';
+            this.dialogClass = 'bg-red-8 text-white';
+            this.showDialog = true;
+          }
+        } catch (error) {
+          console.error('เกิดข้อผิดพลาดในการส่งข้อมูล', error)
+        }
       } else {
-        this.dialogMessage = 'กรุณากรอกข้อมูลให้ครบทุกช่อง';
-        this.dialog = true;
+        alert('กรุณากรอกข้อมูลให้ถูกต้องและครบทุกช่อง')
+        console.log('กรุณากรอกข้อมูลให้ครบทุกช่อง')
       }
     },
     onReset() {
 
     },
     goBack() {
-      this.dialog = false;
-    },
-    handleConfirm() {
-      this.dialog = false;
+      window.history.go(-1);
     },
   },
 };
