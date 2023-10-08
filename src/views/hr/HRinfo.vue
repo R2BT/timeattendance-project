@@ -48,10 +48,9 @@
             <template v-slot:body-cell-action="props">
               <q-td :props="props">
                 <q-btn
-                 
                   icon="groups"
                   color="info"
-                 
+                  v-if="userInfo.employee_roles === 'Admin'"
                   @click="onChange(props.row.employee_id)"
                 
                 ></q-btn>
@@ -159,7 +158,13 @@ const fetchData = () => {
 export default {
   setup() {
     fetchData();
+    const myItem = localStorage.getItem('user-info');
+       console.log(myItem);
+        const userInfo = JSON.parse(myItem);
+       console.log(userInfo.employee_id);
+       console.log(userInfo.employee_roles);
     return {
+      userInfo,
       filter: ref(""),
       columns,
       rows,
