@@ -14,7 +14,7 @@
           </div>
           <div class="background-container">
             <div class="block-background">
-              <h6>สำหรับ HR</h6>
+              <h6>จัดการข้อมูล</h6>
               <h2>ข้อมูลใบลาของพนักงาน</h2>
             </div>
           </div>

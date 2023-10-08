@@ -1,69 +1,127 @@
 <template>
-      <body>
-  <q-page-container>
-    <div class="clock-container " style="margin-left: 80px;">
-      <div class="clock">
-        <div class="successPic">
-            <img src="../../assets/image/logoCPE.png" style="margin: 15px; height: 150px; width: 150px;"  />
-        </div>
-          
-        <h4 class="textDone" >Employee Time Attendance Management</h4>	
-        <q-form @submit="onSubmit" ref="form">
-          <div class="col-margin">
-            <q-input
-              color="purple"
-              bg-color="white"
-              filled
-              v-model="Username"
-              label="Username"
-              :rules="[(value) => !!value || 'กรุณากรอก Username']"
-            ></q-input>
-          </div>
-          <div class="col-margin">
-          <q-input v-model="Password"  color="purple"
-              bg-color="white" filled type="password" label="Password" :rules="[(value) => !!value || 'กรุณากรอก Password']"/>
-    </div>
-          <div class="col-margin">
-            <q-btn
-              unelevated
-              rounded
-              color="positive"
-              label="Login"
-              class="text-center"
-              type="submit"
-              style="padding-left: 200px; padding-right: 200px"
+  <body>
+    <q-page-container>
+      <div class="clock-container">
+        <div class="clock">
+          <div class="successPic">
+            <img
+              src="../../assets/image/logoCPE.png"
+              style="margin: 15px; height: 150px; width: 150px"
             />
           </div>
-        </q-form>
+
+          <h4 class="textDone">Employee Time Attendance Management</h4>
+          <q-form @submit="onSubmit" ref="form">
+            <div class="col-margin">
+              <q-input
+                color="purple"
+                bg-color="white"
+                filled
+                v-model="Username"
+                label="Username"
+                :rules="[(value) => !!value || 'กรุณากรอก Username']"
+              ></q-input>
+            </div>
+            <div class="col-margin">
+              <q-input
+                v-model="Password"
+                color="purple"
+                bg-color="white"
+                filled
+                type="password"
+                label="Password"
+                :rules="[(value) => !!value || 'กรุณากรอก Password']"
+              />
+            </div>
+            <div class="col-margin">
+              <q-btn
+                unelevated
+                rounded
+                color="positive"
+                label="Login"
+                class="text-center"
+                type="submit"
+                style="padding-left: 200px; padding-right: 200px"
+              />
+            </div>
+          </q-form>
+          <q-dialog v-model="showAlertDialog" >
+            <q-card style="width: 400px; padding:  10px;background-color: red;color: white;">
+              <q-card-section>
+                <div class="text-h6">Alert</div>
+              </q-card-section>
+              <q-card-section class="q-pt-none">
+                Username หรือ Password ผิดกรุญาตรวจสอบใหม่อีกครั้ง?
+              </q-card-section>
+              <q-card-actions align="right">
+                <q-btn flat label="OK" color="white" v-close-popup />
+              </q-card-actions>
+            </q-card>
+          </q-dialog>
+        </div>
       </div>
-    </div>
-  </q-page-container>
-</body>
+    </q-page-container>
+  </body>
 </template>
 
-<script scope>
-import { ref, onMounted } from "vue";
+<script setup>
+import axios from "axios";
+import { ref } from "vue";
 import router from "../../router";
-export default {
-  setup() {
-    
-    const Username = ref(null);
-    const Password = ref(null);
 
-    return {
-      Username,
-      Password,
+const Username = ref(null);
+const Password = ref(null);
+const showAlertDialog = ref(false);
 
-      onSubmit() {
-        if (Username.value != null && Username.value != null) {
-          console.log("go");
-          router.push({ name: "recordworkingtime" });
+
+async function login() {
+  if (Username.value != null && Password.value != null) {
+    console.log(Username.value);
+    console.log(Password.value);
+
+    try {
+      let response = await axios.post("http://localhost:3000/login", {
+        id: Username.value,
+        password: Password.value,
+      });
+
+      if (response.status === 200) {
+        if (response.data.message === "User not found.") {
+          console.log(response.data.message);
+          showAlertDialog.value = true;
+          return;
+        } else {
+          if (response.data.data[0].employee_roles === "Employee") {
+            localStorage.clear();
+            localStorage.setItem('user-info', JSON.stringify(response.data.data[0]));
+            router.push("/recordworkingtime");
+          } else if (response.data.data[0].employee_roles === "HR") {
+            localStorage.clear();
+            localStorage.setItem('user-info', JSON.stringify(response.data.data[0]));
+            console.log("HR");
+            router.push("/recordworkingtime");
+          } else if (response.data.data[0].employee_roles === "Admin") {
+            localStorage.clear();
+            localStorage.setItem('user-info', JSON.stringify(response.data.data[0]));
+            console.log("Admin");
+            router.push("/hrmenus");
+          }
         }
-      },
-    };
-  },
-};
+      } else {
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
+      // Handle login failure here
+    }
+  }
+}
+
+function onSubmit() {
+  login();
+}
 </script>
+
 
 <style scoped>
 * {
@@ -105,17 +163,23 @@ body {
   margin-right: 90px;
 }
 .textDone {
-	color: #FFFFFF;
-	font-size: 25px;
-	font-weight: 700;
-	line-height: 130%;
-    justify-content: center;
-    display: grid;
-    flex-direction: column;
-    margin: 15px;
+  color: #ffffff;
+  font-size: 25px;
+  font-weight: 700;
+  line-height: 130%;
+  justify-content: center;
+  display: grid;
+  flex-direction: column;
+  margin: 15px;
 }
-.successPic{
-    justify-content: center;
-    display: grid;
+.successPic {
+  justify-content: center;
+  display: grid;
+}
+.q-dialog {
+  width: 300px;
+  height: 200px;
+  background-color: red;
+  color: white;
 }
 </style>

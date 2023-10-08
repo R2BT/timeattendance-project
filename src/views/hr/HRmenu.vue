@@ -7,7 +7,7 @@
           <div class="background-container">
             <div class="block-background">
               <h6>Employee Time Attendance Management System</h6>
-              <h2>สำหรับ HR</h2>
+              <h3>จัดการข้อมูลพนักงาน</h3>
             </div>
           </div>
         </div>

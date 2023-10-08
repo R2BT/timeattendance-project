@@ -2,152 +2,125 @@
   <q-layout view="hHh lpR fFf">
     <Navbar></Navbar>
     <body>
-    <q-page-container>
-      <div class="clock-container">
-        <div class="clock">
-          <div class="historyButton">
-            <div class="col">
-              <router-link :to="{ name: 'historyleaves' }">
-                <q-btn
-                  dense
-                  flat
-                  round
-                  color="grey"
-                  icon="history"
-                  @click="toggleRightDrawer"
-                  label="ประวัติการลา"
-                />
-              </router-link>
+      <q-page-container>
+        <div class="clock-container">
+          <div class="clock">
+            <div class="historyButton">
+              <div class="col">
+                <router-link :to="{ name: 'historyleaves' }">
+                  <q-btn
+                    dense
+                    flat
+                    round
+                    color="grey"
+                    icon="history"
+                    @click="toggleRightDrawer"
+                    label="ประวัติการลา"
+                  />
+                </router-link>
+              </div>
+            </div>
+            <div class="date">{{ currentDate }}</div>
+            <div class="time">{{ currentTime }}</div>
+            <div class="inputChoice">
+              <q-form @submit="onSubmit" ref="form">
+                <div class="row justify-between">
+                  <div class="col-6">
+                    <q-select
+                      color="purple"
+                      bg-color="white"
+                      filled
+                      v-model="selectedLeaveType"
+                      :options="optionsTypeLeave"
+                      label="ประเภทการลา"
+                      :rules="[(value) => !!value || 'กรุณาเลือกประเภท']"
+                    >
+                    </q-select>
+                  </div>
+
+                  <div class="col-6">
+                    <q-select
+                      color="purple"
+                      bg-color="white"
+                      filled
+                      v-model="selectedTimeType"
+                      :options="optionsTimeLeave"
+                      label="ช่วงเวลา"
+                      :rules="[(value) => !!value || 'กรุณาเลือกช่วงเวลาการลา']"
+                    >
+                    </q-select>
+                  </div>
+                </div>
+                <div class="col" style="padding-top: 30px">
+                  <div class="row justify-between">
+                    <div class="col-6">
+                      <q-input
+                        color="purple"
+                        bg-color="white"
+                        filled
+                        type="date"
+                        v-model="leaveStartdate"
+                        label="ลาวันที่"
+                        lazy-rules :rules="[
+                    val => /^(19|20)\d{2}-\d{2}-\d{2}$/.test(val) || 'กรุณาเลือกวันที่เริ่มลา'
+                  ]"
+                      ></q-input>
+                    </div>
+                    <div class="col-6">
+                      <q-input
+                        color="purple"
+                        bg-color="white"
+                        filled
+                        type="date"
+                        v-model="leaveEnddate"
+                        label="ถึงวันที่"
+                        lazy-rules :rules="[
+                    val => /^(19|20)\d{2}-\d{2}-\d{2}$/.test(val) || 'กรุณาเลือกวันที่สิ้นสุดการลา'
+                  ]"
+                      ></q-input>
+                    </div>
+                  </div>
+                </div>
+                <div class="col" style="padding-top: 30px">
+                  <div class="row">
+                    <div class="col">
+                      <q-input
+                        color="purple"
+                        bg-color="white"
+                        filled
+                        v-model="leaveMessage"
+                        label="ข้อความประกอบการลา"
+                      ></q-input>
+                    </div>
+                  </div>
+                </div>
+                <div class="col" style="padding-top: 25px">
+                  <div class="row justify-between">
+                    <div class="col-margin">
+                      <q-btn
+                        unelevated
+                        rounded
+                        color="positive"
+                        label="ส่งใบลา"
+                        class="text-center"
+                        type="submit"
+                        style="padding-left: 200px; padding-right: 200px"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </q-form>
             </div>
           </div>
-          <div class="date">{{ currentDate }}</div>
-          <div class="time">{{ currentTime }}</div>
-          <div class="inputChoice">
-            <q-form @submit="onSubmit" ref="form">
-              <div class="row justify-between">
-                <div class="col-6">
-                  <q-select
-                    color="purple"
-                    bg-color="white"
-                    filled
-                    v-model="selectedLeaveType"
-                    :options="optionsTypeLeave"
-                    label="ประเภทการลา"
-                    :rules="[(value) => !!value || 'กรุณาเลือกประเภท']"
-                  >
-                  </q-select>
-                </div>
-
-                <div class="col-6">
-                  <q-select
-                    color="purple"
-                    bg-color="white"
-                    filled
-                    v-model="selectedTimeType"
-                    :options="optionsTimeLeave"
-                    label="ช่วงเวลา"
-                    :rules="[(value) => !!value || 'กรุณาเลือกช่วงเวลาการลา']"
-                  >
-                  </q-select>
-                </div>
-              </div>
-              <div class="col" style="padding-top: 30px">
-                <div class="row justify-between">
-                  <div class="col-6">
-                    <q-input
-                      color="purple"
-                      bg-color="white"
-                      filled
-                      v-model="leaveStartdate"
-                      label="ลาวันที่"
-                      :rules="[
-                        (value) => {
-                          const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
-                          if (!value) return 'กรุณากรอกวันที่';
-                          if (!dateRegex.test(value))
-                            return 'รูปแบบวันที่ไม่ถูกต้อง (dd/mm/yyyy)';
-
-                          const [day, month, year] = value
-                            .split('/')
-                            .map(Number);
-
-                          if (day < 1 || day > 31 || month < 1 || month > 12) {
-                            return 'วันที่หรือเดือนไม่ถูกต้อง';
-                          }
-
-                          return true;
-                        },
-                      ]"
-                    ></q-input>
-                  </div>
-                  <div class="col-6">
-                    <q-input
-                      color="purple"
-                      bg-color="white"
-                      filled
-                      v-model="leaveEnddate"
-                      label="ถึงวันที่"
-                      :rules="[
-                        (value) => {
-                          const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
-                          if (!value) return 'กรุณากรอกวันที่';
-                          if (!dateRegex.test(value))
-                            return 'รูปแบบวันที่ไม่ถูกต้อง (dd/mm/yyyy)';
-
-                          const [day, month, year] = value
-                            .split('/')
-                            .map(Number);
-
-                          if (day < 1 || day > 31 || month < 1 || month > 12) {
-                            return 'วันที่หรือเดือนไม่ถูกต้อง';
-                          }
-
-                          return true;
-                        },
-                      ]"
-                    ></q-input>
-                  </div>
-                </div>
-              </div>
-              <div class="col" style="padding-top: 30px">
-                <div class="row">
-                  <div class="col">
-                    <q-input
-                      color="purple"
-                      bg-color="white"
-                      filled
-                      v-model="leaveMessage"
-                      label="ข้อความประกอบการลา"
-                    ></q-input>
-                  </div>
-                </div>
-              </div>
-              <div class="col" style="padding-top: 25px">
-                <div class="row justify-between">
-                  <div class="col-margin">
-                    <q-btn
-                      unelevated
-                      rounded
-                      color="positive"
-                      label="ส่งใบลา"
-                      class="text-center"
-                      type="submit"
-                      style="padding-left: 200px; padding-right: 200px"
-                    />
-                  </div>
-                </div>
-              </div>
-            </q-form>
-          </div>
         </div>
-      </div>
-    </q-page-container>
-  </body>
+      </q-page-container>
+    </body>
   </q-layout>
 </template>
 
 <script>
 import { ref, onMounted } from "vue";
+import axios from "axios";
 import router from "../../router";
 import Navbar from "../../components/EmployeeHeader.vue";
 export default {
@@ -155,6 +128,10 @@ export default {
     Navbar,
   },
   setup() {
+    const myItem = localStorage.getItem("user-info");
+    console.log(myItem);
+    const userInfo = JSON.parse(myItem);
+
     const currentTime = ref("");
     const currentDate = ref("");
 
@@ -214,15 +191,41 @@ export default {
       leaveEnddate,
       leaveMessage,
 
-      onSubmit() {
+      async onSubmit() {
         if (
           selectedLeaveType.value != null &&
           selectedTimeType.value != null &&
           leaveStartdate.value != null &&
           leaveEnddate.value != null
         ) {
-          console.log("go");
-          router.push({ name: "sendleavesuccess" });
+          try {
+
+           
+
+            let response = await axios.post(
+              "http://localhost:3000/leaveRequest",
+              {
+                employee_id: userInfo.employee_id,
+                leave_request_type: selectedLeaveType.value,
+                leave_request_duration: selectedTimeType.value,
+                leave_request_start_date: leaveStartdate.value,
+                leave_request_end_date: leaveEnddate.value,
+                leave_request_note: leaveMessage.value,
+              }
+            );
+            if (response.status === 200) {
+              if (
+                response.data.message ===
+                "Leave request created successfully"
+              ) {
+                console.log("go");
+                router.push({ name: "sendleavesuccess" });
+              }
+            }
+          } catch (error) {
+            console.error("Send Leave failed:", error);
+            // Handle the error here
+          }
         }
       },
     };

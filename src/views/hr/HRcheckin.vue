@@ -28,212 +28,127 @@
               style="background-color: white"
             />
           </div>
-          <q-table
-            flat
-            bordered
-            :rows="filteredRows"
-            :columns="columns"
-            row-key="eid"
-          />
+          <q-table flat bordered :rows="rows" :columns="columns" :filter="filter" row-key="attendance_id" :rows-per-page-options="[6]" />
         </div>
       </q-page-container>
     </body>
   </q-layout>
 </template>
 
+  
 <script>
 import Navbar from "../../components/EmployeeHeader.vue";
+import axios from "axios";
+import {
+    ref
+} from "vue";
+const rows = ref([]);
+const columns = [{
+        name: "eid",
+        label: "รหัสพนักงาน",
+        align: "left",
+        field: (row) => row.employee_id,
+        sortable: true,
+    },
+    {
+        name: "date",
+        label: "วันที่",
+        align: "left",
+        field: (row) => formatDate(row.attendance_date),
+        sortable: true,
+    },
+    {
+        name: "time",
+        label: "เวลา",
+        align: "left",
+        field: (row) => row.attendance_time,
+        sortable: true,
+    },
+    {
+        name: "type",
+        label: "ประเภท",
+        align: "left",
+        field: (row) => row.attendance_type,
+        sortable: true,
+    },
+    {
+        name: "firstname",
+        label: "ชื่อ",
+        align: "left",
+        field: (row) => row.employee_name,
+        sortable: true,
+    },
+    {
+        name: "surename",
+        label: "นามสกุล",
+        align: "left",
+        field: (row) => row.employee_surname,
+        sortable: true,
+    },
+    {
+        name: "department",
+        label: "แผนก",
+        align: "left",
+        field: (row) => row.employee_department,
+        sortable: true,
+    },
+    {
+        name: "position",
+        label: "ตำแหน่ง",
+        align: "left",
+        field: (row) => row.employee_position,
+        sortable: true,
+    },
+    {
+        name: "note",
+        label: "หมายเหตุ",
+        align: "left",
+        field: (row) =>{
+      if (!row.leave_request_note) {
+        return "-";
+      }
+      return row.leave_request_note;
+    },
+        sortable: true,
+    },
+];
+const fetchData = () => {
+  axios
+    .get("http://localhost:3000/attendances")
+    .then((response) => {
+      const slicedData = response.data.data.slice(0, 100);
+
+      rows.value = slicedData;
+      console.log(rows.value);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+};
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${day}/${month}/${year}`;
+};
+
 export default {
-  data() {
+  setup() {
+    fetchData();
+    rows.value = rows.value.sort((a, b) => {
+  return b.attendance_date - a.attendance_date;
+});
     return {
-      rows: [
-        {
-          eid: "ABC123",
-          date: "25/07/2023",
-          start: "8.00",
-          end: "17.00",
-          firstname: "AAA",
-          surename: "BBB",
-          department: "ฝ่ายขาย",
-          position: "หัวหน้าฝ่าย",
-          note: "",
-        },
-        {
-          eid: "DFDE4513",
-          date: "05/07/2023",
-          start: "8.00",
-          end: "12.00",
-          firstname: "FEW",
-          surename: "BFGEWBB",
-          department: "ฝ่ายขาย",
-          position: "พนักงานทั่วไป",
-          note: "ลาป่วยช่วงบ่าย",
-        },
-        {
-          eid: "JYTJ15",
-          date: "20/07/2023",
-          start: "8.00",
-          end: "17.00",
-          firstname: "DWQDWQ",
-          surename: "DWQD",
-          department: "ฝ่ายไหน",
-          position: "พนักงานทั่วไป",
-          note: "",
-        },
-        {
-          eid: "GRTG5415",
-          date: "12/07/2023",
-          start: "8.00",
-          end: "17.00",
-          firstname: "HTRHTR",
-          surename: "BGRB",
-          department: "ฝ่ายไหน",
-          position: "หัวหน้าฝ่าย",
-          note: "",
-        },
-        {
-          eid: "JYGR15",
-          date: "17/08/2023",
-          start: "8.00",
-          end: "17.00",
-          firstname: "YRHRT",
-          surename: "FEW",
-          department: "ฝ่ายเอ",
-          position: "สัญญาจ้าง",
-          note: "",
-        },
-        {
-          eid: "DDGR15",
-          date: "22/08/2023",
-          start: "8.00",
-          end: "17.00",
-          firstname: "GTRERFE",
-          surename: "BFEW",
-          department: "ฝ่ายบี",
-          position: "สัญญาจ้าง",
-          note: "",
-        },
-        {
-          eid: "KYJK4812",
-          date: "11/09/2023",
-          start: "8.00",
-          end: "17.00",
-          firstname: "FEWF",
-          surename: "FDSFD",
-          department: "ฝ่ายซี",
-          position: "พนักงานทั่วไป",
-          note: "",
-        },
-      ],
-      columns: [
-        {
-          name: "eid",
-          label: "รหัสพนักงาน",
-          align: "left",
-          field: "eid",
-          sortable: true,
-        },
-        {
-          name: "date",
-          label: "วันที่เข้างาน",
-          align: "left",
-          field: "date",
-          sortable: true,
-        },
-        {
-          name: "start",
-          label: "เริ่มงาน",
-          align: "left",
-          field: "start",
-          sortable: true,
-        },
-        {
-          name: "end",
-          label: "เลิกงาน",
-          align: "left",
-          field: "end",
-          sortable: true,
-        },
-        {
-          name: "firstname",
-          label: "ชื่อ",
-          align: "left",
-          field: "firstname",
-          sortable: true,
-        },
-        {
-          name: "surename",
-          label: "นามสกุล",
-          align: "left",
-          field: "surename",
-          sortable: true,
-        },
-        {
-          name: "department",
-          label: "แผนก",
-          align: "left",
-          field: "department",
-          sortable: true,
-        },
-        {
-          name: "position",
-          label: "ตำแหน่ง",
-          align: "left",
-          field: "position",
-          sortable: true,
-        },
-        {
-          name: "note",
-          label: "หมายเหตุ",
-          align: "left",
-          field: "note",
-          sortable: true,
-        },
-      ],
-      pagination: {
-        sortBy: "name",
-      },
-      dialog: false,
-      searchText: "",
+      filter: ref(""),
+      columns,
+      rows,
     };
   },
-  components: {
-    Navbar,
-  },
-  computed: {
-    filteredRows() {
-      return this.rows.filter(
-        (row) =>
-          row.eid.toLowerCase().includes(this.searchText.toLowerCase()) ||
-          row.date.toLowerCase().includes(this.searchText.toLowerCase()) ||
-          row.start.toLowerCase().includes(this.searchText.toLowerCase()) ||
-          row.end.toLowerCase().includes(this.searchText.toLowerCase()) ||
-          row.firstname.toLowerCase().includes(this.searchText.toLowerCase()) ||
-          row.surename.toLowerCase().includes(this.searchText.toLowerCase()) ||
-          row.department
-            .toLowerCase()
-            .includes(this.searchText.toLowerCase()) ||
-          row.position.toLowerCase().includes(this.searchText.toLowerCase()) ||
-          row.note.toLowerCase().includes(this.searchText.toLowerCase())
-      );
+    components: {
+        Navbar,
     },
-  },
-  methods: {
-    onDelete(eid) {
-      this.dialog = true;
-      this.eidToDelete = eid;
-    },
-    confirmDelete() {
-      const indexToDelete = this.rows.findIndex(
-        (row) => row.eid === this.eidToDelete
-      );
-      if (indexToDelete !== -1) {
-        this.rows.splice(indexToDelete, 1);
-      }
-      this.dialog = false;
-    },
-    filterData() {},
-  },
 };
 </script>
 

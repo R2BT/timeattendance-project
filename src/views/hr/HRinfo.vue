@@ -12,7 +12,7 @@
 
           <div class="background-container">
             <div class="block-background">
-              <h6>สำหรับ HR</h6>
+              <h6>จัดการข้อมูล</h6>
               <h2>ข้อมูลพนักงาน</h2>
             </div>
           </div>
@@ -20,13 +20,12 @@
         <div class="q-pa-md">
           <div class="search-bar">
             <q-input
-              v-model="searchText"
+              v-model="filter"
               placeholder="ค้นหา"
               outlined
               dense
-              @input="filterData"
               class="search-input"
-              style="background-color: white"
+              style="background-color: white;"
             />
             <router-link :to="{ name: 'addemployee' }">
               <q-btn
@@ -41,16 +40,20 @@
           <q-table
             flat
             bordered
-            :rows="filteredRows"
+            :rows="rows"
             :columns="columns"
-            row-key="eid"
+            row-key="employee_id"
+            :filter="filter"
           >
             <template v-slot:body-cell-action="props">
               <q-td :props="props">
                 <q-btn
+                 
                   icon="groups"
                   color="info"
-                  @click="onChange(props.row.eid)"
+                 
+                  @click="onChange(props.row.employee_id)"
+                
                 ></q-btn>
                 <router-link :to="{ name: 'editemployee' }"
                   ><q-btn
@@ -61,7 +64,7 @@
                 <q-btn
                   icon="delete"
                   color="negative"
-                  @click="onDelete(props.row.eid)"
+                  @click="onDelete(props.row.employee_id)"
                 ></q-btn>
               </q-td>
             </template>
@@ -92,159 +95,79 @@
 
 <script>
 import Navbar from "../../components/EmployeeHeader.vue";
+import axios from "axios";
+import { ref } from "vue";
+const rows = ref([]);
+const columns = [
+  {
+    name: "eid",
+    required: true,
+    label: "รหัสพนักงาน",
+    align: "left",
+    field: (row) => row.employee_id,
+    sortable: true,
+  },
+  {
+    name: "firstname",
+    label: "ชื่อ",
+    align: "left",
+    field: (row) => row.employee_name,
+    sortable: true,
+  },
+  {
+    name: "surename",
+    label: "นามสกุล",
+    align: "left",
+    field: (row) => row.employee_surname,
+    sortable: true,
+  },
+  {
+    name: "department",
+    label: "แผนก",
+    align: "left",
+    field: (row) => row.employee_department,
+    sortable: true,
+  },
+  {
+    name: "position",
+    label: "ตำแหน่ง",
+    align: "left",
+    field: (row) => row.employee_position,
+    sortable: true,
+  },
+  {
+    name: "action",
+    label: "Action",
+    align: "center",
+    field: "action",
+  },
+];
+const fetchData = () => {
+  axios
+    .get("http://localhost:3000/employees")
+    .then((response) => {
+      const slicedData = response.data.data.slice(0, 100);
+
+      rows.value = slicedData;
+      console.log(rows.value);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+};
+
 export default {
+  setup() {
+    fetchData();
+    return {
+      filter: ref(""),
+      columns,
+      rows,
+    };
+  },
+
   data() {
     return {
-      rows: [
-        {
-          index: "001",
-          eid: "ABC123",
-          firstname: "AAA",
-          surename: "BBB",
-          department: "ฝ่ายขาย",
-          position: "หัวหน้าฝ่าย",
-        },
-        {
-          index: "002",
-          eid: "DFDE4513",
-          firstname: "FEW",
-          surename: "BFGEWBB",
-          department: "ฝ่ายขาย",
-          position: "พนักงานทั่วไป",
-        },
-        {
-          index: "003",
-          eid: "JYTJ15",
-          firstname: "DWQDWQ",
-          surename: "DWQD",
-          department: "ฝ่ายไหน",
-          position: "พนักงานทั่วไป",
-        },
-        {
-          index: "004",
-          eid: "GRTG5415",
-          firstname: "HTRHTR",
-          surename: "BGRB",
-          department: "ฝ่ายไหน",
-          position: "หัวหน้าฝ่าย",
-        },
-        {
-          index: "005",
-          eid: "JYGR15",
-          firstname: "YRHRT",
-          surename: "FEW",
-          department: "ฝ่ายเอ",
-          position: "สัญญาจ้าง",
-        },
-        {
-          index: "006",
-          eid: "DDGR15",
-          firstname: "GTRERFE",
-          surename: "BFEW",
-          department: "ฝ่ายบี",
-          position: "สัญญาจ้าง",
-        },
-        {
-          index: "007",
-          eid: "KYJK4812",
-          firstname: "FEWF",
-          surename: "FDSFD",
-          department: "ฝ่ายซี",
-          position: "พนักงานทั่วไป",
-        },
-        {
-          index: "008",
-          eid: "JYI4185",
-          firstname: "BFDF",
-          surename: "HTRGFE",
-          department: "ฝ่ายดี",
-          position: "พนักงานทั่วไป",
-        },
-        {
-          index: "009",
-          eid: "ZFDE71",
-          firstname: "FDSC",
-          surename: "GREG",
-          department: "ฝ่ายอี",
-          position: "สัญญาจ้าง",
-        },
-        {
-          index: "010",
-          eid: "GTG78",
-          firstname: "FWEFD",
-          surename: "REWFD",
-          department: "ฝ่ายเอฟ",
-          position: "หัวหน้าฝ่าย",
-        },
-        {
-          index: "011",
-          eid: "PIKIU15",
-          firstname: "ERWFD",
-          surename: "WEWQ",
-          department: "ฝ่ายถลุง",
-          position: "พนักงานทั่วไป",
-        },
-        {
-          index: "012",
-          eid: "EWQ48",
-          firstname: "FGVRE",
-          surename: "NGHFD",
-          department: "ฝ่ายHR",
-          position: "พนักงานทั่วไป",
-        },
-      ],
-      columns: [
-        {
-          name: "index",
-          required: true,
-          label: "ID",
-          align: "left",
-          field: "index",
-          sortable: true,
-        },
-        {
-          name: "eid",
-          label: "รหัสพนักงาน",
-          align: "left",
-          field: "eid",
-          sortable: true,
-        },
-        {
-          name: "firstname",
-          label: "ชื่อ",
-          align: "left",
-          field: "firstname",
-          sortable: true,
-        },
-        {
-          name: "surename",
-          label: "นามสกุล",
-          align: "left",
-          field: "surename",
-          sortable: true,
-        },
-        {
-          name: "department",
-          label: "แผนก",
-          align: "left",
-          field: "department",
-          sortable: true,
-        },
-        {
-          name: "position",
-          label: "ตำแหน่ง",
-          align: "left",
-          field: "position",
-          sortable: true,
-        },
-        {
-          name: "action",
-          label: "Action",
-          align: "center",
-          field: "action",
-          sortable: true,
-        },
-      ],
       pagination: {
         sortBy: "name",
       },
@@ -257,21 +180,6 @@ export default {
   components: {
     Navbar,
   },
-  computed: {
-    filteredRows() {
-      return this.rows.filter(
-        (row) =>
-          row.index.toLowerCase().includes(this.searchText.toLowerCase()) ||
-          row.eid.toLowerCase().includes(this.searchText.toLowerCase()) ||
-          row.firstname.toLowerCase().includes(this.searchText.toLowerCase()) ||
-          row.surename.toLowerCase().includes(this.searchText.toLowerCase()) ||
-          row.department
-            .toLowerCase()
-            .includes(this.searchText.toLowerCase()) ||
-          row.position.toLowerCase().includes(this.searchText.toLowerCase())
-      );
-    },
-  },
   methods: {
     onChange(eid) {
       this.dialogMessage =
@@ -282,18 +190,25 @@ export default {
     },
     onDelete(eid) {
       this.dialogMessage = "ข้อมูลพนักงานจะถูกลบท่านต้องการดำเนินการต่อหรือไม่";
+      console.log(eid);
       this.dialog = true;
       this.actionColor = "negative";
       this.eidToDelete = eid;
     },
     confirmDelete() {
-      const indexToDelete = this.rows.findIndex(
-        (row) => row.eid === this.eidToDelete
-      );
-      if (indexToDelete !== -1) {
-        this.rows.splice(indexToDelete, 1);
-      }
+      axios
+        .delete("http://localhost:3000/employee/" + this.eidToDelete)
+        .then((response) => {
+          console.log(response.value);
+        });
+      // const indexToDelete = this.rows.findIndex(
+      //   (row) => row.eid === this.eidToDelete
+      // );
+      // if (indexToDelete !== -1) {
+      //   this.rows.splice(indexToDelete, 1);
+      // }
       this.dialog = false;
+      window.location.reload();
     },
     filterData() {},
   },
