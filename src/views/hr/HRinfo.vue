@@ -25,7 +25,7 @@
               outlined
               dense
               class="search-input"
-              style="background-color: white;"
+              style="background-color: white"
             />
             <router-link :to="{ name: 'addemployee' }">
               <q-btn
@@ -52,13 +52,9 @@
                   color="info"
                   v-if="userInfo.employee_roles === 'Admin'"
                   @click="onChange(props.row.employee_id)"
-                
                 ></q-btn>
                 <router-link :to="{ name: 'editemployee' }"
-                  ><q-btn
-                    icon="mode_edit"
-                    color="warning"
-                  ></q-btn
+                  ><q-btn icon="mode_edit" color="warning"></q-btn
                 ></router-link>
                 <q-btn
                   icon="delete"
@@ -86,7 +82,7 @@
       </q-card-section>
       <q-card-actions align="right">
         <q-btn label="ยกเลิก" color: @click="dialog = false" />
-        <q-btn label="ยืนยัน" :color="actionColor" @click="confirmDelete" />
+        <q-btn label="ยืนยัน" :color="actionColor" @click="confirmAction" />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -135,6 +131,13 @@ const columns = [
     sortable: true,
   },
   {
+    name: "roles",
+    label: "บทบาท",
+    align: "left",
+    field: (row) => row.employee_roles,
+    sortable: true,
+  },
+  {
     name: "action",
     label: "Action",
     align: "center",
@@ -158,11 +161,11 @@ const fetchData = () => {
 export default {
   setup() {
     fetchData();
-    const myItem = localStorage.getItem('user-info');
-       console.log(myItem);
-        const userInfo = JSON.parse(myItem);
-       console.log(userInfo.employee_id);
-       console.log(userInfo.employee_roles);
+    const myItem = localStorage.getItem("user-info");
+    console.log(myItem);
+    const userInfo = JSON.parse(myItem);
+    console.log(userInfo.employee_id);
+    console.log(userInfo.employee_roles);
     return {
       userInfo,
       filter: ref(""),
@@ -179,7 +182,7 @@ export default {
       dialog: false,
       searchText: "",
       dialogMessage: "",
-      eidChangeStatus: "",
+      eidChangeRoles: "",
     };
   },
   components: {
@@ -191,7 +194,7 @@ export default {
         "พนักงานคนนี้จะถูกเปลี่ยนสถานะเป็น Hr ต้องการเปลี่ยนหรือไม่?";
       this.dialog = true;
       this.actionColor = "primary";
-      this.eidChangeStatus = eid;
+      this.eidChangeRoles = eid;
     },
     onDelete(eid) {
       this.dialogMessage = "ข้อมูลพนักงานจะถูกลบท่านต้องการดำเนินการต่อหรือไม่";
@@ -200,20 +203,32 @@ export default {
       this.actionColor = "negative";
       this.eidToDelete = eid;
     },
-    confirmDelete() {
-      axios
-        .delete("http://localhost:3000/employee/" + this.eidToDelete)
-        .then((response) => {
-          console.log(response.value);
-        });
-      // const indexToDelete = this.rows.findIndex(
-      //   (row) => row.eid === this.eidToDelete
-      // );
-      // if (indexToDelete !== -1) {
-      //   this.rows.splice(indexToDelete, 1);
-      // }
-      this.dialog = false;
-      window.location.reload();
+    confirmAction() {
+      if (this.actionColor === "primary") {
+        axios
+          .put(`http://localhost:3000/employee/${this.eidChangeRoles}/role`, {
+            employee_roles	: "HR", 
+          })
+          .then((response) => {
+            console.log(response.data);
+            this.dialog = false;
+            window.location.reload();
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      } else if (this.actionColor === "negative") {
+        axios
+          .delete(`http://localhost:3000/employee/${this.eidToDelete}`)
+          .then((response) => {
+            console.log(response.data);
+            this.dialog = false;
+            window.location.reload();
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      }
     },
     filterData() {},
   },
