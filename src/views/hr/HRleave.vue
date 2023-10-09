@@ -40,12 +40,12 @@
                 <q-btn
                   icon="check"
                   color="positive"
-                  @click="onApprove(props.row.employee_id)"
+                  @click="onApprove(props.row.leave_request_id)"
                 ></q-btn>
                 <q-btn
                   icon="cancel"
                   color="negative"
-                  @click="onReject(props.row.employee_id)"
+                  @click="onReject(props.row.leave_request_id)"
                 ></q-btn>
               </q-td>
             </template>
