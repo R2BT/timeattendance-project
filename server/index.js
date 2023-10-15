@@ -54,6 +54,24 @@ app.post('/login', (req, res) => {
     }
 })
 
+//DownloadPDF
+app.get('/download-pdf/uploads/:filename', (req, res) => {
+    const filename = req.params.filename;
+    const normalizedFilePath = path.join(__dirname, 'uploads', filename.replace(/\\/g, path.sep));
+
+    if (fs.existsSync(normalizedFilePath)) {
+        const fileBasename = path.basename(normalizedFilePath); // Extract the file name
+
+        res.setHeader('Content-Disposition', `attachment; filename="${fileBasename}"`);
+        res.setHeader('Content-Type', 'application/pdf');
+
+        const fileStream = fs.createReadStream(normalizedFilePath);
+        fileStream.pipe(res);
+    } else {
+        res.status(404).send('File not found');
+    }
+});
+
 //Employee
 //GetAllEmployees
 app.get('/employees', (req, res) => {
