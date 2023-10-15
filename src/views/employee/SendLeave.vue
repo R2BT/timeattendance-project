@@ -52,35 +52,36 @@
                   </div>
                 </div>
                 <div class="col" style="padding-top: 30px">
-                  <div class="row justify-between">
-                    <div class="col-6">
-                      <q-input
-                        color="purple"
-                        bg-color="white"
-                        filled
-                        type="date"
-                        v-model="leaveStartdate"
-                        label="ลาวันที่"
-                        lazy-rules :rules="[
-                    val => /^(19|20)\d{2}-\d{2}-\d{2}$/.test(val) || 'กรุณาเลือกวันที่เริ่มลา'
-                  ]"
-                      ></q-input>
-                    </div>
-                    <div class="col-6">
-                      <q-input
-                        color="purple"
-                        bg-color="white"
-                        filled
-                        type="date"
-                        v-model="leaveEnddate"
-                        label="ถึงวันที่"
-                        lazy-rules :rules="[
-                    val => /^(19|20)\d{2}-\d{2}-\d{2}$/.test(val) || 'กรุณาเลือกวันที่สิ้นสุดการลา'
-                  ]"
-                      ></q-input>
-                    </div>
-                  </div>
-                </div>
+    <div class="row justify-between">
+      <div class="col-6">
+        <q-input
+          color="purple"
+          bg-color="white"
+          filled
+          type="date"
+          v-model="leaveStartdate"
+          label="ลาวันที่"
+          lazy-rules :rules="[
+            val => /^(19|20)\d{2}-\d{2}-\d{2}$/.test(val) || 'กรุณาเลือกวันที่เริ่มลา',
+          ]"
+        ></q-input>
+      </div>
+      <div class="col-6">
+        <q-input
+          color="purple"
+          bg-color="white"
+          filled
+          type="date"
+          v-model="leaveEnddate"
+          label="ถึงวันที่"
+          lazy-rules :rules="[
+            val => /^(19|20)\d{2}-\d{2}-\d{2}$/.test(val) || 'กรุณาเลือกวันที่สิ้นสุดการลา',
+            validateDateRange // เรียกใช้ฟังก์ชัน validateDateRange
+          ]"
+        ></q-input>
+      </div>
+    </div>
+  </div>
                 <div class="col" style="padding-top: 30px">
                   <div class="row">
                     <div class="col">
@@ -126,6 +127,17 @@ import Navbar from "../../components/EmployeeHeader.vue";
 export default {
   components: {
     Navbar,
+  },
+   methods: {
+    validateDateRange() {
+      const startDate = new Date(this.leaveStartdate);
+      const endDate = new Date(this.leaveEnddate);
+
+      if (startDate > endDate) {
+        return "วันที่เริ่มลาต้องน้อยกว่าหรือเท่ากับวันที่สิ้นสุดการลา";
+      }
+      return true;
+    },
   },
   setup() {
     const myItem = localStorage.getItem("user-info");
