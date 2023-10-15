@@ -20,28 +20,49 @@
         </div>
         <div class="q-pa-md">
           <div class="search-bar">
-            <q-input v-model="filter" placeholder="ค้นหา" outlined dense class="search-input"
-              style="background-color: white" />
+            <q-input
+              v-model="filter"
+              placeholder="ค้นหา"
+              outlined
+              dense
+              class="search-input"
+              style="background-color: white"
+            />
             <router-link :to="{ name: 'addemployee' }">
-              <q-btn label="เพิ่มข้อมูล" color="positive" icon-right="add" @click="handleGoldenrod" class="add-button" />
+              <q-btn
+                label="เพิ่มข้อมูล"
+                color="positive"
+                icon-right="add"
+                @click="handleGoldenrod"
+                class="add-button"
+              />
             </router-link>
           </div>
-          <q-table flat bordered :rows="rows" :columns="columns" row-key="employee_id" :filter="filter">
+          <q-table
+            flat
+            bordered
+            :rows="rows"
+            :columns="columns"
+            row-key="employee_id"
+            :filter="filter"
+          >
             <template v-slot:body-cell-action="props">
               <q-td :props="props">
                 <q-btn
                   icon="groups"
                   color="info"
                   v-if="userInfo.employee_roles === 'Admin'"
-                  @click="onChange(props.row.employee_id)"
+                  @click="onChange(props.row.employee_id,props.row.employee_roles)"
                 ></q-btn>
-                <q-btn icon="mode_edit" @click="onEdit(props.row.employee_id)"></q-btn>
+                <q-btn
+                  icon="mode_edit"
+                  @click="onEdit(props.row.employee_id)"
+                ></q-btn>
                 <q-btn
                   icon="delete"
                   color="negative"
                   @click="onDelete(props.row.employee_id)"
                 ></q-btn>
-                
               </q-td>
             </template>
           </q-table>
@@ -172,9 +193,15 @@ export default {
     Navbar,
   },
   methods: {
-    onChange(eid) {
-      this.dialogMessage =
-        "พนักงานคนนี้จะถูกเปลี่ยนสถานะเป็น Hr ต้องการเปลี่ยนหรือไม่?";
+    onChange(eid,roles) {
+      if (roles == "HR") {
+        this.dialogMessage =
+          "พนักงานคนนี้เป็นสถานะ Hr อยู่แล้วต้องการเปลี่ยนหรือไม่?";
+      } else {
+        this.dialogMessage =
+          "พนักงานคนนี้จะถูกเปลี่ยนสถานะเป็น Hr ต้องการเปลี่ยนหรือไม่?";
+      }
+      console.log(roles);
       this.dialog = true;
       this.actionColor = "primary";
       this.eidChangeRoles = eid;
@@ -190,7 +217,7 @@ export default {
       if (this.actionColor === "primary") {
         axios
           .put(`http://localhost:3000/employee/${this.eidChangeRoles}/role`, {
-            employee_roles	: "HR", 
+            employee_roles: "HR",
           })
           .then((response) => {
             console.log(response.data);
@@ -214,9 +241,9 @@ export default {
       }
     },
     onEdit(eid) {
-      router.push('/update/' + eid);
+      router.push("/update/" + eid);
     },
-    filterData() { },
+    filterData() {},
   },
 };
 </script>
