@@ -96,7 +96,11 @@
                       </template>
                     </q-file>
                   </div>
-                  <div class="mb-2">{{ employeeData.employee_profile_img ? employeeData.employee_profile_img.replace(/^uploads\\/, '') : '' }}</div>
+                  <div class="mb-2">{{ employeeData.employee_profile_img ?
+                    employeeData.employee_profile_img.replace(/^uploads\\/, '') : '' }}</div>
+                  <div>
+                    <a :href="`http://localhost:3000/download-pdf/${employeeData.employee_profile_img}`" download>ดาวน์โหลดไฟล์</a>
+                  </div>
                 </div>
                 <div style="margin: 10px;"></div>
                 <div class="mb-3">
@@ -108,7 +112,11 @@
                       </template>
                     </q-file>
                   </div>
-                  <div class="mb-2">{{ employeeData.employee_personnel_id_img ? employeeData.employee_personnel_id_img.replace(/^uploads\\/, '') : '' }}</div>
+                  <div class="mb-2">{{ employeeData.employee_personnel_id_img ?
+                    employeeData.employee_personnel_id_img.replace(/^uploads\\/, '') : '' }}</div>
+                  <div>
+                    <a :href="`http://localhost:3000/download-pdf/${employeeData.employee_profile_img}`" download>ดาวน์โหลดไฟล์</a>
+                  </div>
                 </div>
                 <div style="margin: 10px;"></div>
                 <div class="mb-3">
@@ -120,7 +128,11 @@
                       </template>
                     </q-file>
                   </div>
-                  <div class="mb-2">{{ employeeData.employee_transcript_img ? employeeData.employee_transcript_img.replace(/^uploads\\/, '') : '' }}</div>
+                  <div class="mb-2">{{ employeeData.employee_transcript_img ?
+                    employeeData.employee_transcript_img.replace(/^uploads\\/, '') : '' }}</div>
+                  <div>
+                    <a :href="`http://localhost:3000/download-pdf/${employeeData.employee_transcript_img}`" download>ดาวน์โหลดไฟล์</a>
+                  </div>
                 </div>
                 <div style="margin: 10px;"></div>
                 <div class="mb-3">
@@ -132,7 +144,11 @@
                       </template>
                     </q-file>
                   </div>
-                  <div class="mb-2">{{ employeeData.employee_contract ? employeeData.employee_contract.replace(/^uploads\\/, '') : '' }}</div>
+                  <div class="mb-2">{{ employeeData.employee_contract ?
+                    employeeData.employee_contract.replace(/^uploads\\/, '') : '' }}</div>
+                  <div>
+                    <a :href="`http://localhost:3000/download-pdf/${employeeData.employee_contract}`" download>ดาวน์โหลดไฟล์</a>
+                  </div>
                 </div>
                 <div style="margin: 15px;"></div>
                 <div class="q-gutter-md" style="display: flex; justify-content: end;">
@@ -160,7 +176,7 @@
   
 <script>
 import Navbar from "../../components/EmployeeHeader.vue";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
 
@@ -300,25 +316,26 @@ export default {
       updateBirthdate,
     };
   },
+
   handleProfileImageUpload(event) {
-    // Handle the file selection for the profile image
-    this.employee_profile_img = event.target.files[0];
-  },
+  // Handle the file selection for the profile image
+  employeeData.value.employee_profile_img = event.target.files[0];
+},
 
-  handlePersonnelIdImageUpload(event) {
-    // Handle the file selection for the personnel ID image
-    this.employee_personnel_id_img = event.target.files[0];
-  },
+handlePersonnelIdImageUpload(event) {
+  // Handle the file selection for the personnel ID image
+  employeeData.value.employee_personnel_id_img = event.target.files[0];
+},
 
-  handleTranscriptImageUpload(event) {
-    // Handle the file selection for the transcript image
-    this.employee_transcript_img = event.target.files[0];
-  },
+handleTranscriptImageUpload(event) {
+  // Handle the file selection for the transcript image
+  employeeData.value.employee_transcript_img = event.target.files[0];
+},
 
-  handleContractUpload(event) {
-    // Handle the file selection for the contract
-    this.employee_contract = event.target.files[0];
-  },
+handleContractUpload(event) {
+  // Handle the file selection for the contract
+  employeeData.value.employee_contract = event.target.files[0];
+},
 };
 </script>
   
