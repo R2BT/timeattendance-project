@@ -32,6 +32,8 @@ const db = mysql.createConnection({
 });
 db.connect();
 
+app.use('/download-pdf', express.static('./uploads/'));
+
 //Login
 app.post('/login', (req, res) => {
     let id = req.body.id;
@@ -285,19 +287,23 @@ app.put('/employee/:id', upload.fields([
             employee_login_password,
         };
 
-        // Check if new files have been uploaded and update the data accordingly
         if (req.files) {
+            // Check if new files have been uploaded and update the data accordingly
             if (req.files['employee_profile_img']) {
-                updateData.employee_profile_img = path.join(uploadDir, `${employee_name}_profile-${Date.now()}.pdf`);
+                updateData.employee_profile_img = `${employee_name}_profile-${Date.now()}.pdf`;
+                fs.writeFileSync(path.join(uploadDir, updateData.employee_profile_img), req.files['employee_profile_img'][0].buffer);
             }
             if (req.files['employee_personnel_id_img']) {
-                updateData.employee_personnel_id_img = path.join(uploadDir, `${employee_name}_personnelId-${Date.now()}.pdf`);
+                updateData.employee_personnel_id_img = `${employee_name}_personnelId-${Date.now()}.pdf`;
+                fs.writeFileSync(path.join(uploadDir, updateData.employee_personnel_id_img), req.files['employee_personnel_id_img'][0].buffer);
             }
             if (req.files['employee_transcript_img']) {
-                updateData.employee_transcript_img = path.join(uploadDir, `${employee_name}_transcript-${Date.now()}.pdf`);
+                updateData.employee_transcript_img = `${employee_name}_transcript-${Date.now()}.pdf`;
+                fs.writeFileSync(path.join(uploadDir, updateData.employee_transcript_img), req.files['employee_transcript_img'][0].buffer);
             }
             if (req.files['employee_contract']) {
-                updateData.employee_contract = path.join(uploadDir, `${employee_name}_contract-${Date.now()}.pdf`);
+                updateData.employee_contract = `${employee_name}_contract-${Date.now()}.pdf`;
+                fs.writeFileSync(path.join(uploadDir, updateData.employee_contract), req.files['employee_contract'][0].buffer);
             }
         }
 
@@ -323,7 +329,6 @@ app.put('/employee/:id', upload.fields([
         });
     }
 });
-
 
 //UpdateEmployeeRoleByID
 app.put('/employee/:id/role', (req, res) => {
