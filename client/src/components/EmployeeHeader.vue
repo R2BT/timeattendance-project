@@ -3,7 +3,7 @@
     <q-header elevated class="custom-navbar" height-hint="98">   
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="toggleRightDrawer" />
-        <q-toolbar-title> Cooperative Project </q-toolbar-title>
+        <q-toolbar-title> ETAMS Project </q-toolbar-title>
         <!-- <q-tabs>
           <q-route-tab to="/sendleave" label="About Us" />
         </q-tabs> -->
