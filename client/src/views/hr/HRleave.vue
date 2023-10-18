@@ -27,12 +27,22 @@
               class="search-input"
               style="background-color: white"
             />
+            <router-link :to="{ name: 'hrleaves' }">
+              <q-btn
+                label="ประวัติการลาพนักงาน"
+                color="grey"
+                icon-right="history"
+                @click="handleGoldenrod"
+                class="add-button"
+              />
+            </router-link>
           </div>
           <q-table
             flat
             bordered
             :rows="rows"
             :columns="columns"
+            :filter="filter"
             row-key="employee_id"
           >
             <template v-slot:body-cell-action="props">
@@ -107,7 +117,7 @@ const columns = [
     required: true,
     label: "วันที่ลา",
     align: "left",
-    field: (row) => row.leave_request_start_date,
+    field: (row) => formatDate(row.leave_request_start_date),
     sortable: true,
   },
   {
@@ -115,7 +125,7 @@ const columns = [
     required: true,
     label: "ถึงวันที่",
     align: "left",
-    field: (row) => row.leave_request_end_date,
+    field: (row) => formatDate(row.leave_request_end_date),
     sortable: true,
   },
   {
@@ -142,7 +152,13 @@ const columns = [
     field: (row) => row.leave_request_note,
     sortable: true,
   },
-
+  {
+    name: "statusLeave",
+    align: "left",
+    label: "สถานะ",
+    field: (row) => row.leave_request_status, 
+    sortable: true,
+  },
   {
     name: "action",
     label: "Action",
@@ -161,6 +177,14 @@ const fetchData = () => {
     .catch((error) => {
       console.error("Error:", error);
     });
+};
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${day}/${month}/${year}`;
 };
 
 export default {

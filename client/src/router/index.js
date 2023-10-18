@@ -11,6 +11,7 @@ import HRMenu from '../views/hr/HRmenu.vue'
 import HRInfo from '../views/hr/HRinfo.vue'
 import HRCheckin from '../views/hr/HRcheckin.vue'
 import HRLeave from '../views/hr/HRleave.vue'
+import HRLeaves from '../views/hr/HRallleave.vue'
 import RegisterEmployee from '../views/hr/RegisterEmployee.vue'
 import EmployeeHeader from '../components/EmployeeHeader.vue'
 import UpdateEmployee from '../views/hr/UpdateEmployee.vue'
@@ -81,6 +82,11 @@ const router = createRouter({
       path: '/hrleave',
       name: 'hrleave',
       component: HRLeave
+    },
+    {
+      path: '/hrleaves',
+      name: 'hrleaves',
+      component: HRLeaves
     },
     {
       path: '/addemployee',
